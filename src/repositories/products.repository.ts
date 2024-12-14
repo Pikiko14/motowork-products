@@ -65,7 +65,7 @@ class ProductsRepository {
       if (!validSortFields.includes(sortBy)) {
         throw new Error(`Invalid sort field. Allowed fields are: ${validSortFields.join(", ")}`);
       }
-
+      console.log(fields);
       // Fetch paginated data
       const products = await this.model
         .find(query)

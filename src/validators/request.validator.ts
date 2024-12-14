@@ -33,6 +33,8 @@ const PaginationValidator = [
     .optional(),
   check("order")
     .optional(),
+  check("fields")
+    .optional(),
   (req: Request, res: Response, next: NextFunction) =>
     handlerValidator(req, res, next),
 ];
