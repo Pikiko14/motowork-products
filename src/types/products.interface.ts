@@ -29,10 +29,16 @@ export interface ProductsInterface {
   price: number;
   discount?: number;
   category: string;
+  type: TypeProducts;
   description?: string;
   banner: string;
   images: string[];
   details: DetailsProducts;
   additionalInfo: AdditionalInfoInterface[];
   createdAt: Date;
+}
+
+export enum TypeProducts {
+  vehicle = "vehicle",
+  product = "product",
 }

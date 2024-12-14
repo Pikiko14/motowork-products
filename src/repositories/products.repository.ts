@@ -55,7 +55,8 @@ class ProductsRepository {
     skip: number,
     perPage: number,
     sortBy: string = "name",
-    order: any = "-1"
+    order: any = "-1",
+    fields: string[] = []
   ): Promise<PaginationResponseInterface> {
     try {
       // Parse sort order to ensure it is a number
@@ -69,6 +70,7 @@ class ProductsRepository {
       const products = await this.model
         .find(query)
         .sort({ [sortBy]: order })
+        .select(fields.length > 0 ? fields.join(' ') : '')
         .skip(skip)
         .limit(perPage);
 

@@ -2,8 +2,7 @@ import { Schema, model, Types } from "mongoose";
 import { TaskQueue } from "../queues/cloudinary.queue";
 import {
   ProductsInterface,
-  SubsectionInterface,
-  DetailsProducts,
+  TypeProducts,
 } from "../types/products.interface";
 
 const ProductSchema = new Schema<ProductsInterface>(
@@ -50,6 +49,11 @@ const ProductSchema = new Schema<ProductsInterface>(
         type: String,
       },
     ],
+    type: {
+      type: String,
+      enum: Object.values(TypeProducts),
+      required: true,
+    },
 
     // DETALLES
     details: {
