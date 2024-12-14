@@ -25,6 +25,10 @@ const ProductSchema = new Schema<ProductsInterface>(
       type: String,
       required: true,
     },
+    brand_icon: {
+      type: String,
+      required: false,
+    },
     price: {
       type: Number,
       required: true,

@@ -26,6 +26,7 @@ export interface ProductsInterface {
   model: string;
   state: "Nueva" | "Usada";
   brand: string;
+  brand_icon?: string;
   price: number;
   discount?: number;
   category: string;

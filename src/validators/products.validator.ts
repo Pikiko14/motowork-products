@@ -63,6 +63,8 @@ const ProductCreationValidator = [
     .withMessage("El tipo debe ser vehicle o product.")
     .isLength({ min: 1, max: 10 })
     .withMessage("El tipo debe tener entre 1 y 10 caracteres."),
+  check('brand_icon')
+    .optional(),
 
   // DETALLES
   check("details.power")
@@ -82,17 +84,7 @@ const ProductCreationValidator = [
     .withMessage("El almacenamiento debe ser un texto."),
   check("details.testDrive")
     .notEmpty()
-    .withMessage("El test drive es obligatorio.")
-    .custom(async (value: string) => {
-      const isValidValue =
-        /^(https?:\/\/)?([\w\-]+\.)+[a-z]{2,6}(:\d+)?(\/[^\s?]*)?(\?[^\s#]*)?(#[^\s]*)?$/.test(
-          value
-        );
-      if (!isValidValue) {
-        throw new Error("El link del test drive debe ser una url válida.");
-      }
-      return true;
-    }),
+    .withMessage("El test drive es obligatorio."),
   check("details.colors")
     .isArray({ min: 1 })
     .withMessage("Los colores deben ser un array con al menos un valor."),
