@@ -108,8 +108,8 @@ class Utils {
    */
   getPath = async (path: string): Promise<string | undefined> => {
     let pathSplit = path.split("/").pop();
-    if (path.includes('brands')) {
-      pathSplit = "brands";
+    if (path.includes('products')) {
+      pathSplit = "products";
     }
 
     await this.validateOrGeneratePath(pathSplit || "");

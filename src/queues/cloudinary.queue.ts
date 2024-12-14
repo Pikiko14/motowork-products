@@ -1,20 +1,22 @@
 import { Utils } from "../utils/utils";
 import Bull, { Job, Queue, QueueOptions } from "bull";
-import productsRepository from "../repositories/products.repository";
 import { CloudinaryService } from "../services/cloudinary.service";
+import productsRepository from "../repositories/products.repository";
+import ProductsRepository from "../repositories/products.repository";
+import { BannerType, ProductsInterface } from "../types/products.interface";
 
 export class TaskQueue<T> extends productsRepository {
   private utils: Utils;
   private path: string;
   private queue: Queue<T>;
   public redisConfig: QueueOptions["redis"] = {
-    host: '127.0.0.1',
+    host: "127.0.0.1",
     port: 6379,
   };
   public folder: string = "products";
   public cloudinaryService: CloudinaryService;
 
-  constructor(queueName: string, ) {
+  constructor(queueName: string) {
     super();
     this.queue = new Bull<T>(queueName, {
       redis: this.redisConfig,
@@ -44,18 +46,80 @@ export class TaskQueue<T> extends productsRepository {
    * Lógica para manejar cada tarea
    */
   private async handleTask(job: Job<any>): Promise<void> {
+    let fileResponse = null;
+    let repository = new ProductsRepository();
+    let productEntity: ProductsInterface | null = null;
+
+    // upload single file
+    let folderString = "";
     if (job.data.taskType === "uploadFile") {
-      const { file, product } = job.data.payload;
+      const { file, product, folder, path, entity } = job.data.payload;
+      productEntity = await repository.findById(product._id);
+      folderString = folder;
       const imgBuffer = await this.utils.generateBuffer(file.path);
-      const fileResponse = await this.cloudinaryService.uploadImage(imgBuffer, this.folder);
-      product.icon = fileResponse.secure_url;
-      await this.utils.deleteItemFromStorage(`${this.path}${file ? file.filename : ""}`);
-      await this.update(product._id, product);
-    } else {
-      const { icon } = job.data.payload;
-      await this.cloudinaryService.deleteImageByUrl(icon);
+      await this.utils.deleteItemFromStorage(
+        `${file.filename ? `${path}${file.filename}` : ""}`
+      );
+      fileResponse = await this.cloudinaryService.uploadImage(
+        imgBuffer,
+        folder
+      );
+
+      if (entity === "banner" && productEntity) {
+        const bannerImg = {
+          type_banner:
+            file.fieldname === "bannerDesktop"
+              ? BannerType.desktop
+              : BannerType.mobile,
+          path: fileResponse.secure_url,
+        };
+        productEntity.banner.push(bannerImg);
+        await repository.update(productEntity.id, productEntity);
+      }
     }
-    console.log(`Tarea procesada con datos:`, job.data);
+
+    // upload multiple files
+    if (job.data.taskType === "uploadMultipleFiles") {
+      const { product, images, folder, path, entity } = job.data.payload;
+      productEntity = await repository.findById(product._id);
+      folderString = folder;
+      for (const image of images) {
+        const imgBuffer = await this.utils.generateBuffer(image.path);
+        // delete local storage
+        await this.utils.deleteItemFromStorage(
+          `${image.path ? `${path}${image.filename}` : ""}`
+        );
+
+        // upload single
+        fileResponse = await this.cloudinaryService.uploadImage(
+          imgBuffer,
+          folder
+        );
+
+        // save in bbdd
+        if (entity === "images" && productEntity) {
+          const imageObj = {
+            path: fileResponse.secure_url,
+            type:
+              image.fieldname === "imagesDesktop"
+                ? BannerType.desktop
+                : BannerType.mobile,
+          };
+          productEntity.images.push(imageObj);
+          await repository.update(productEntity.id, productEntity);
+        }
+      }
+      // upload multiples
+      // fileResponse = await this.cloudinaryService.uploadMultipleFiles(bufferArray, this.folder);
+    }
+
+    // delete file
+    if (job.data.taskType === "deleteFile") {
+      const { icon, folder } = job.data.payload;
+      folderString = folder;
+      fileResponse = await this.cloudinaryService.deleteImageByUrl(icon);
+    }
+    console.log(`Tarea procesada con respuesta:`, fileResponse);
   }
 
   /**

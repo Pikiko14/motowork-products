@@ -97,6 +97,14 @@ class ProductsRepository {
   public async delete(id: string): Promise<ProductsInterface | void | null> {
     return this.model.findByIdAndDelete(id);
   }
+
+  /**
+   * get by id
+   * @param id
+   */
+  public async findById(id: string): Promise<ProductsInterface | null> {
+    return this.model.findById(id);
+  }
 }
 
 export default ProductsRepository;

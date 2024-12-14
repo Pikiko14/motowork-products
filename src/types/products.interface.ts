@@ -22,6 +22,8 @@ export interface DetailsProducts {
 }
 
 export interface ProductsInterface {
+  id?: string;
+  _id: string;
   name: string;
   model: string;
   state: "Nueva" | "Usada";
@@ -32,8 +34,8 @@ export interface ProductsInterface {
   category: string;
   type: TypeProducts;
   description?: string;
-  banner: string;
-  images: string[];
+  banner: ProductsBanners[];
+  images: ProductImagesInterface[];
   details: DetailsProducts;
   additionalInfo: AdditionalInfoInterface[];
   createdAt: Date;
@@ -42,4 +44,19 @@ export interface ProductsInterface {
 export enum TypeProducts {
   vehicle = "vehicle",
   product = "product",
+}
+
+export enum BannerType {
+  mobile = "mobile",
+  desktop = "desktop",
+}
+
+export interface ProductsBanners {
+  path: string;
+  type_banner: BannerType;
+}
+
+export interface ProductImagesInterface {
+  path: string;
+  type: BannerType;
 }

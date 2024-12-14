@@ -1,4 +1,7 @@
 import { check } from "express-validator";
+import ProductsRepository from "./../repositories/products.repository";
+
+const repository = new ProductsRepository();
 
 const ProductCreationValidator = [
   // INFO GENERAL
@@ -57,14 +60,13 @@ const ProductCreationValidator = [
     .isArray({ min: 1 })
     .withMessage("Las imágenes deben ser un array con al menos una URL."),
   check("images.*").isURL().withMessage("Cada imagen debe ser una URL válida."),
-  check('type')
+  check("type")
     .optional()
     .isString()
     .withMessage("El tipo debe ser vehicle o product.")
     .isLength({ min: 1, max: 10 })
     .withMessage("El tipo debe tener entre 1 y 10 caracteres."),
-  check('brand_icon')
-    .optional(),
+  check("brand_icon").optional(),
 
   // DETALLES
   check("details.power")
@@ -97,7 +99,7 @@ const ProductCreationValidator = [
     .optional()
     .isArray()
     .withMessage("La información adicional debe ser un array."),
-    check("additionalInfo.*.enable")
+  check("additionalInfo.*.enable")
     .isBoolean()
     .withMessage("El enable debe ser un valor booleano."),
   check("additionalInfo.*.sectionName")
@@ -127,4 +129,18 @@ const ProductCreationValidator = [
     .withMessage("El valor del campo debe ser un texto."),
 ];
 
-export { ProductCreationValidator };
+const ProductIdValidator = [
+  check("id")
+    .exists()
+    .withMessage("Debes especificar el id del producto.")
+    .notEmpty()
+    .withMessage("El id del producto no puede estar vacio.")
+    .isMongoId()
+    .withMessage("El id del producto debe ser un id de mongo.")
+    .custom(async (value: string) => {
+      const product = await repository.findOneByQuery({ _id: value });
+      if (!product) throw new Error("El producto no existe.");
+    }),
+];
+
+export { ProductCreationValidator, ProductIdValidator };

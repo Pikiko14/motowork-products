@@ -14,8 +14,8 @@ export class ProductsService extends ProductsRepository {
 
   constructor() {
     super();
-    this.path = "/brands/";
-    this.queue = new TaskQueue("cloudinary");
+    this.path = "/products/";
+    this.queue = new TaskQueue("cloudinary_products");
     this.queue.setupListeners();
     this.cloudinaryService = new CloudinaryService();
   }
@@ -112,10 +112,110 @@ export class ProductsService extends ProductsRepository {
           totalItems: products.totalItems,
           totalPages: products.totalPages,
         },
-        "Listado de marcas."
+        "Listado de products."
       );
     } catch (error: any) {
       throw new Error(error.message);
     }
+  }
+
+  /**
+   * Upload file
+   * @param { Response } res Express response
+   * @param { Express.Multer.File } file Express.Multer.File
+   */
+  public async uploadFiles(
+    res: Response,
+    bannerMobile: Express.Multer.File,
+    bannerDesktop: Express.Multer.File,
+    imagesMobile: Express.Multer.File[],
+    imagesDesktop: Express.Multer.File[],
+    productId: string
+  ): Promise<void> {
+    
+      // get product
+      const product = await this.findById(productId);
+
+      // save mobile and desktop banner
+      if (bannerDesktop) {
+        await this.queue.addJob(
+          {
+            taskType: "uploadFile",
+            payload: {
+              file: bannerDesktop,
+              product,
+              folder: this.folder,
+              path: this.path,
+              entity: "banner",
+            },
+          },
+          {
+            attempts: 3,
+            backoff: 5000,
+          }
+        );
+      }
+
+      if (bannerMobile) {
+        await this.queue.addJob(
+          {
+            taskType: "uploadFile",
+            payload: {
+              file: bannerMobile,
+              product,
+              folder: this.folder,
+              path: this.path,
+              entity: "banner",
+            },
+          },
+          {
+            attempts: 3,
+            backoff: 5000,
+          }
+        );
+      }
+
+      // save desktop images
+      if (imagesDesktop && imagesDesktop.length > 0) {
+        await this.queue.addJob(
+          {
+            taskType: "uploadMultipleFiles",
+            payload: {
+              product,
+              images: imagesDesktop,
+              folder: this.folder,
+              path: this.path,
+              entity: "images",
+            },
+          },
+          {
+            attempts: 3,
+            backoff: 5000,
+          }
+        );
+      }
+
+      // save mobile images
+      if (imagesMobile && imagesMobile.length > 0) {
+        await this.queue.addJob(
+          {
+            taskType: "uploadMultipleFiles",
+            payload: {
+              product,
+              images: imagesMobile,
+              folder: this.folder,
+              path: this.path,
+              entity: "images",
+            },
+          },
+          {
+            attempts: 3,
+            backoff: 5000,
+          }
+        );
+      }
+
+      return ResponseHandler.successResponse(res, product, "Imagenes subidas.");
+    
   }
 }

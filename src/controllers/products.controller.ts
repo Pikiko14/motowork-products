@@ -58,4 +58,39 @@ export class ProductsController {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
+
+  /**
+   * Upload files
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  uploadFiles = async (req: RequestExt, res: Response): Promise<void> => {
+
+      const bannerMobile = req.files["bannerMobile"]
+        ? req.files["bannerMobile"][0]
+        : null;
+      const bannerDesktop = req.files["bannerDesktop"]
+        ? req.files["bannerDesktop"][0]
+        : null;
+      const imagesMobile = req.files["imagesMobile"]
+        ? req.files["imagesMobile"]
+        : null;
+      const imagesDesktop = req.files["imagesDesktop"]
+        ? req.files["imagesDesktop"]
+        : null;
+
+      // store products
+      return await this.service.uploadFiles(
+        res,
+        bannerMobile,
+        bannerDesktop,
+        imagesMobile,
+        imagesDesktop,
+        req.body.id,
+      );
+
+      res.status(200).json({success: true});
+    
+  }
 }

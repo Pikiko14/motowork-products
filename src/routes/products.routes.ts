@@ -1,9 +1,13 @@
 import { Router } from "express";
+import { upload } from "../utils/storage";
 import sessionCheck from "../middlewares/sessions.middleware";
 import { PaginationValidator } from "../validators/request.validator";
 import { ProductsController } from "../controllers/products.controller";
 import perMissionMiddleware from "../middlewares/permission.middleware";
-import { ProductCreationValidator } from "../validators/products.validator";
+import {
+  ProductCreationValidator,
+  ProductIdValidator,
+} from "../validators/products.validator";
 
 // init router
 const router = Router();
@@ -31,6 +35,25 @@ router.get(
   perMissionMiddleware("list-products"),
   PaginationValidator,
   controller.getProducts
+);
+
+/**
+ * Upload files products
+ */
+const uploadFields = upload.fields([
+  { name: "bannerMobile", maxCount: 1 },
+  { name: "bannerDesktop", maxCount: 1 },
+  { name: "imagesMobile", maxCount: 5 },
+  { name: "imagesDesktop", maxCount: 5 },
+]);
+
+router.post(
+  "/upload-files",
+  sessionCheck,
+  perMissionMiddleware("create-products"),
+  ProductIdValidator,
+  uploadFields,
+  controller.uploadFiles
 );
 
 // export router

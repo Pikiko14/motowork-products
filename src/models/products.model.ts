@@ -3,6 +3,7 @@ import { TaskQueue } from "../queues/cloudinary.queue";
 import {
   ProductsInterface,
   TypeProducts,
+  BannerType,
 } from "../types/products.interface";
 
 const ProductSchema = new Schema<ProductsInterface>(
@@ -44,13 +45,30 @@ const ProductSchema = new Schema<ProductsInterface>(
     description: {
       type: String,
     },
-    banner: {
-      type: String,
-      required: false,
-    },
+    banner: [
+      {
+        type_banner: {
+          type: String,
+          enum: Object.values(BannerType),
+          required: false,
+        },
+        path: {
+          type: String,
+          required: false,
+        }
+      }
+    ],
     images: [
       {
-        type: String,
+        path: {
+          type: String,
+          required: false,
+        },
+        type: {
+          type: String,
+          enum: Object.values(BannerType),
+          required: false,
+        },
       },
     ],
     type: {
