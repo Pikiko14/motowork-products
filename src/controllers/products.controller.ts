@@ -21,7 +21,7 @@ export class ProductsController {
   createProducts = async (
     req: Request,
     res: Response
-  ): Promise<void | ResponseRequestInterface> => {
+  ): Promise<void | ResponseRequestInterface | any> => {
     try {
       // get body
       const body = matchedData(req) as ProductsInterface;

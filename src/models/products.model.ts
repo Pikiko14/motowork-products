@@ -1,6 +1,10 @@
 import { Schema, model, Types } from "mongoose";
 import { TaskQueue } from "../queues/cloudinary.queue";
-import { ProductsInterface, SubsectionInterface, DetailsProducts } from "../types/products.interface";
+import {
+  ProductsInterface,
+  SubsectionInterface,
+  DetailsProducts,
+} from "../types/products.interface";
 
 const ProductSchema = new Schema<ProductsInterface>(
   {
@@ -39,7 +43,7 @@ const ProductSchema = new Schema<ProductsInterface>(
     },
     banner: {
       type: String,
-      required: true,
+      required: false,
     },
     images: [
       {
@@ -52,7 +56,7 @@ const ProductSchema = new Schema<ProductsInterface>(
       power: { type: String, required: true },
       licenseType: { type: String, required: true },
       storage: { type: String, required: true },
-      testDrive: { type: Boolean, required: true },
+      testDrive: { type: String, required: true },
       colors: [{ type: String, required: true }],
     },
 
@@ -60,15 +64,11 @@ const ProductSchema = new Schema<ProductsInterface>(
     additionalInfo: [
       {
         sectionName: { type: String, required: true },
+        enable: { type: Boolean, required: true },
         subsections: [
           {
-            subsectionName: { type: String, required: true },
-            fields: [
-              {
-                name: { type: String, required: true },
-                value: { type: String },
-              },
-            ],
+            name: { type: String, required: true },
+            value: { type: String },
           },
         ],
       },
@@ -90,7 +90,7 @@ ProductSchema.index({ name: 1, category: 1 });
 //   async function (next: any) {
 //     const queue = new TaskQueue("cloudinary");
 //     queue.setupListeners();
-// 
+//
 //     const product: ProductsInterface = await this.model.findOne(this.getQuery()).exec();
 //     try {
 //       // Eliminar banner
@@ -103,7 +103,7 @@ ProductSchema.index({ name: 1, category: 1 });
 //           }
 //         );
 //       }
-// 
+//
 //       // Eliminar imágenes del producto
 //       if (product.images.length > 0) {
 //         for (const image of product.images) {
