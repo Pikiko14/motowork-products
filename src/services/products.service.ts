@@ -96,7 +96,7 @@ export class ProductsService extends ProductsRepository {
       // validate filter data
       if (query.filter) {
         const filter = JSON.parse(query.filter);
-        queryObj = {...filter}
+        queryObj = {...queryObj, ...filter}
       }
       // do query
       const fields = query.fields ? query.fields.split(",") : [];
