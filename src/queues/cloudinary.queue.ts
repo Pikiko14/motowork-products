@@ -115,9 +115,9 @@ export class TaskQueue<T> extends productsRepository {
 
     // delete file
     if (job.data.taskType === "deleteFile") {
-      const { icon, folder } = job.data.payload;
+      const { file, folder } = job.data.payload;
       folderString = folder;
-      fileResponse = await this.cloudinaryService.deleteImageByUrl(icon);
+      fileResponse = await this.cloudinaryService.deleteImageByUrl(file);
     }
     console.log(`Tarea procesada con respuesta:`, fileResponse);
   }

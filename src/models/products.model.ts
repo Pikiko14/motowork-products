@@ -112,47 +112,49 @@ const ProductSchema = new Schema<ProductsInterface>(
 );
 
 // Índices para optimización
-ProductSchema.index({ name: 1, category: 1 });
+ProductSchema.index({ name: 1, category: 1, brand: 1 });
 
 // Middleware para manejar eliminación de imágenes antes de borrar un producto
-// ProductSchema.pre(
-//   "findOneAndDelete",
-//   { document: true, query: true },
-//   async function (next: any) {
-//     const queue = new TaskQueue("cloudinary");
-//     queue.setupListeners();
-//
-//     const product: ProductsInterface = await this.model.findOne(this.getQuery()).exec();
-//     try {
-//       // Eliminar banner
-//       if (product.banner) {
-//         await queue.addJob(
-//           { taskType: "deleteFile", payload: { file: product.banner } },
-//           {
-//             attempts: 3,
-//             backoff: 5000,
-//           }
-//         );
-//       }
-//
-//       // Eliminar imágenes del producto
-//       if (product.images.length > 0) {
-//         for (const image of product.images) {
-//           await queue.addJob(
-//             { taskType: "deleteFile", payload: { file: image } },
-//             {
-//               attempts: 3,
-//               backoff: 5000,
-//             }
-//           );
-//         }
-//       }
-//       next();
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
+ProductSchema.pre(
+  "findOneAndDelete",
+  { document: true, query: true },
+  async function (next: any) {
+    const queue = new TaskQueue("cloudinary_products");
+    queue.setupListeners();
+    const product: ProductsInterface = await this.model.findOne(this.getQuery()).exec();
+    try {
+      // Eliminar banner
+      if (product && product.banner) {
+        for (const item of product.banner) {
+          console.log(item.path)
+          await queue.addJob(
+            { taskType: "deleteFile", payload: { file: item.path } },
+            {
+              attempts: 3,
+              backoff: 5000,
+            }
+          );
+        }
+      }
+
+      // Eliminar imágenes del producto
+      if (product.images.length > 0) {
+        for (const image of product.images) {
+          await queue.addJob(
+            { taskType: "deleteFile", payload: { file: image.path } },
+            {
+              attempts: 3,
+              backoff: 5000,
+            }
+          );
+        }
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 const ProductModel = model<ProductsInterface>("products", ProductSchema);
 

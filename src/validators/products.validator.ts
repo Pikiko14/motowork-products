@@ -1,5 +1,7 @@
 import { check } from "express-validator";
 import ProductsRepository from "./../repositories/products.repository";
+import { NextFunction, Request, Response } from "express";
+import { handlerValidator } from "../utils/handler.validator";
 
 const repository = new ProductsRepository();
 
@@ -37,9 +39,7 @@ const ProductCreationValidator = [
     .isFloat({ gt: 0 })
     .withMessage("El precio debe ser un número mayor a 0."),
   check("discount")
-    .optional()
-    .isFloat({ min: 0 })
-    .withMessage("El descuento debe ser un número positivo."),
+    .optional(),
   check("category")
     .notEmpty()
     .withMessage("La categoría es obligatoria.")
@@ -51,15 +51,6 @@ const ProductCreationValidator = [
     .withMessage("La descripción debe ser un texto.")
     .isLength({ min: 1, max: 1500 })
     .withMessage("La descripción debe tener entre 1 y 1500 caracteres."),
-  check("banner")
-    .optional()
-    .isURL()
-    .withMessage("El banner debe ser una URL válida."),
-  check("images")
-    .optional()
-    .isArray({ min: 1 })
-    .withMessage("Las imágenes deben ser un array con al menos una URL."),
-  check("images.*").isURL().withMessage("Cada imagen debe ser una URL válida."),
   check("type")
     .optional()
     .isString()
@@ -110,23 +101,23 @@ const ProductCreationValidator = [
   check("additionalInfo.*.subsections")
     .isArray()
     .withMessage("Las subsecciones deben ser un array."),
-  check("additionalInfo.*.subsections.*.subsectionName")
+  check("additionalInfo.*.subsections.*.name")
     .notEmpty()
     .withMessage("El nombre de la subsección es obligatorio.")
     .isString()
     .withMessage("El nombre de la subsección debe ser un texto."),
-  check("additionalInfo.*.subsections.*.fields")
-    .isArray()
-    .withMessage("Los campos de la subsección deben ser un array."),
-  check("additionalInfo.*.subsections.*.fields.*.name")
+  check("additionalInfo.*.subsections.*.name")
     .notEmpty()
     .withMessage("El nombre del campo es obligatorio.")
     .isString()
     .withMessage("El nombre del campo debe ser un texto."),
-  check("additionalInfo.*.subsections.*.fields.*.value")
+  check("additionalInfo.*.subsections.*.value")
     .optional()
     .isString()
     .withMessage("El valor del campo debe ser un texto."),
+  (req: Request, res: Response, next: NextFunction) =>
+    handlerValidator(req, res, next),
+  
 ];
 
 const ProductIdValidator = [
@@ -138,9 +129,13 @@ const ProductIdValidator = [
     .isMongoId()
     .withMessage("El id del producto debe ser un id de mongo.")
     .custom(async (value: string) => {
-      const product = await repository.findOneByQuery({ _id: value });
-      if (!product) throw new Error("El producto no existe.");
+      const product = await repository.findById(value);
+      if (!product) {
+        throw new Error("El producto no existe.");
+      };
     }),
+  (req: Request, res: Response, next: NextFunction) =>
+    handlerValidator(req, res, next),
 ];
 
 export { ProductCreationValidator, ProductIdValidator };

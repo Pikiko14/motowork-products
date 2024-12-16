@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, ModifyResult } from "mongoose";
 import BrandsModel from "../models/products.model";
 import { ProductsInterface } from "../types/products.interface";
 import { PaginationResponseInterface } from "../types/response.interface";
@@ -94,8 +94,8 @@ class ProductsRepository {
    * Delete products by id
    * @param id
    */
-  public async delete(id: string): Promise<ProductsInterface | void | null> {
-    return this.model.findByIdAndDelete(id);
+  public async delete(id: string): Promise<ProductsInterface | void | null | any> {
+    return await this.model.findOneAndDelete({ _id: id });
   }
 
   /**
@@ -103,7 +103,7 @@ class ProductsRepository {
    * @param id
    */
   public async findById(id: string): Promise<ProductsInterface | null> {
-    return this.model.findById(id);
+    return await this.model.findById(id);
   }
 }
 

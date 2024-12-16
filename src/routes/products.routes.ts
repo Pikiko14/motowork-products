@@ -50,8 +50,8 @@ router.post(
   "/upload-files",
   sessionCheck,
   perMissionMiddleware("create-products"),
-  ProductIdValidator,
   uploadFields,
+  ProductIdValidator,
   controller.uploadFiles
 );
 
@@ -64,6 +64,17 @@ router.get(
   perMissionMiddleware("list-products"),
   ProductIdValidator,
   controller.showProduct,
+);
+
+/**
+ * Delete products
+ */
+router.delete(
+  '/:id',
+  sessionCheck,
+  perMissionMiddleware("delete-products"),
+  ProductIdValidator,
+  controller.deleteProduct,
 );
 
 // export router

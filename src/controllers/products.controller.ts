@@ -105,10 +105,24 @@ export class ProductsController {
   showProduct = async (req: RequestExt, res: Response) => {
     try {
       const { id } = req.params;
-      console.log(id);
       return await this.service.showProduct(res, id);
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
+
+  /**
+   * delete products*
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  deleteProduct = async (req: RequestExt, res: Response) => {
+    try {
+      const { id } = req.params;
+      return await this.service.deleteProduct(res, id);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  }
 }

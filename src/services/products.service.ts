@@ -225,7 +225,7 @@ export class ProductsService extends ProductsRepository {
   }
 
   /**
-   * Show products
+   * Show product
    * @param { Response } res Express response
    * @param { string } id query of list
    * @return { Promise<void | ResponseRequestInterface> }
@@ -243,7 +243,34 @@ export class ProductsService extends ProductsRepository {
         {
           product
         },
-        "Información del products."
+        "Información del producto."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  /**
+   * Delete product
+   * @param { Response } res Express response
+   * @param { string } id query of list
+   * @return { Promise<void | ResponseRequestInterface> }
+   */
+  public async deleteProduct(
+    res: Response,
+    id: string,
+  ): Promise<void | ResponseHandler> {
+    try {
+      //  get product data
+      const product = await this.delete(id);
+
+      // return data
+      return ResponseHandler.successResponse(
+        res,
+        {
+          product,
+        },
+        "Producto eliminado correctamente."
       );
     } catch (error: any) {
       throw new Error(error.message);
