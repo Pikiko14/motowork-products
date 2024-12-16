@@ -76,6 +76,11 @@ const ProductSchema = new Schema<ProductsInterface>(
       enum: Object.values(TypeProducts),
       required: true,
     },
+    active: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
 
     // DETALLES
     details: {

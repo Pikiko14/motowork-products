@@ -39,6 +39,7 @@ export interface ProductsInterface {
   details: DetailsProducts;
   additionalInfo: AdditionalInfoInterface[];
   createdAt: Date;
+  active: boolean;
 }
 
 export enum TypeProducts {

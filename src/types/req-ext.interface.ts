@@ -27,4 +27,5 @@ export interface PaginationInterface {
   sortBy?: string;
   order?: string;
   fields?: string;
+  filter?: string;
 }
