@@ -61,11 +61,11 @@ class ProductsRepository {
     try {
       // Parse sort order to ensure it is a number
 
-      const validSortFields = ["name", "createdAt"];
+      const validSortFields = ["name", "createdAt", "price"];
       if (!validSortFields.includes(sortBy)) {
         throw new Error(`Invalid sort field. Allowed fields are: ${validSortFields.join(", ")}`);
       }
-      console.log(fields);
+
       // Fetch paginated data
       const products = await this.model
         .find(query)
