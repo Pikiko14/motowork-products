@@ -79,6 +79,10 @@ export class ProductsController {
       const imagesDesktop = req.files["imagesDesktop"]
         ? req.files["imagesDesktop"]
         : null;
+      // console.log(bannerMobile);
+      // console.log(bannerDesktop);
+      // console.log(imagesMobile?.length);
+      // console.log(imagesDesktop?.length);
 
       // store products
       return await this.service.uploadFiles(

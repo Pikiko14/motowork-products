@@ -126,7 +126,6 @@ ProductSchema.pre(
       // Eliminar banner
       if (product && product.banner) {
         for (const item of product.banner) {
-          console.log(item.path)
           await queue.addJob(
             { taskType: "deleteFile", payload: { file: item.path } },
             {
