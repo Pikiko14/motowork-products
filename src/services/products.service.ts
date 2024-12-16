@@ -223,4 +223,30 @@ export class ProductsService extends ProductsRepository {
       return ResponseHandler.successResponse(res, product, "Imagenes subidas.");
     
   }
+
+  /**
+   * Show products
+   * @param { Response } res Express response
+   * @param { string } id query of list
+   * @return { Promise<void | ResponseRequestInterface> }
+   */
+  public async showProduct(
+    res: Response,
+    id: string,
+  ): Promise<void | ResponseHandler> {
+    try {
+      const product = await this.findById(id);
+
+      // return data
+      return ResponseHandler.successResponse(
+        res,
+        {
+          product
+        },
+        "Información del products."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

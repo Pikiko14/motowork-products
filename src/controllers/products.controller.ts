@@ -66,7 +66,7 @@ export class ProductsController {
    * @returns Promise<void>
    */
   uploadFiles = async (req: RequestExt, res: Response): Promise<void> => {
-
+    try {
       const bannerMobile = req.files["bannerMobile"]
         ? req.files["bannerMobile"][0]
         : null;
@@ -87,10 +87,28 @@ export class ProductsController {
         bannerDesktop,
         imagesMobile,
         imagesDesktop,
-        req.body.id,
+        req.body.id
       );
 
-      res.status(200).json({success: true});
-    
-  }
+      res.status(200).json({ success: true });
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
+
+  /**
+   * Show product
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  showProduct = async (req: RequestExt, res: Response) => {
+    try {
+      const { id } = req.params;
+      console.log(id);
+      return await this.service.showProduct(res, id);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
 }

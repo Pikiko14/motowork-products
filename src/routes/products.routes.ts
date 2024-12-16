@@ -46,7 +46,6 @@ const uploadFields = upload.fields([
   { name: "imagesMobile", maxCount: 5 },
   { name: "imagesDesktop", maxCount: 5 },
 ]);
-
 router.post(
   "/upload-files",
   sessionCheck,
@@ -54,6 +53,17 @@ router.post(
   ProductIdValidator,
   uploadFields,
   controller.uploadFiles
+);
+
+/**
+ * Show product
+ */
+router.get(
+  '/:id',
+  sessionCheck,
+  perMissionMiddleware("list-products"),
+  ProductIdValidator,
+  controller.showProduct,
 );
 
 // export router
