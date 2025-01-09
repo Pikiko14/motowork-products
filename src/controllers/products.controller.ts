@@ -129,4 +129,30 @@ export class ProductsController {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   }
+
+  /**
+   * Update product
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  updateProducts = async (
+    req: Request,
+    res: Response
+  ): Promise<void | ResponseRequestInterface | any> => {
+    try {
+      // get body
+      const body = matchedData(req) as ProductsInterface;
+      const { id } = req.params;
+
+      // store brand
+      return await this.service.updateProducts(
+        res,
+        body,
+        id,
+      );
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
 }

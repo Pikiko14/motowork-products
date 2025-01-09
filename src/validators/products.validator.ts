@@ -49,7 +49,7 @@ const ProductCreationValidator = [
     .optional()
     .isString()
     .withMessage("La descripción debe ser un texto.")
-    .isLength({ min: 1, max: 1500 })
+    .isLength({ min: 0, max: 1500 })
     .withMessage("La descripción debe tener entre 1 y 1500 caracteres."),
   check("type")
     .optional()
@@ -65,17 +65,20 @@ const ProductCreationValidator = [
     .withMessage("La potencia es obligatoria.")
     .isString()
     .withMessage("La potencia debe ser un texto."),
-  check("details.licenseType")
+  check("details.weight")
     .notEmpty()
     .withMessage("El tipo de licencia es obligatorio.")
     .isString()
     .withMessage("El tipo de licencia debe ser un texto."),
-  check("details.storage")
+  check("details.max_power")
     .notEmpty()
     .withMessage("El almacenamiento es obligatorio.")
     .isString()
     .withMessage("El almacenamiento debe ser un texto."),
-  check("details.testDrive")
+  check("details.torque")
+    .notEmpty()
+    .withMessage("El test drive es obligatorio."),
+  check("details.type_engine")
     .notEmpty()
     .withMessage("El test drive es obligatorio."),
   check("details.colors")

@@ -276,4 +276,31 @@ export class ProductsService extends ProductsRepository {
       throw new Error(error.message);
     }
   }
+
+  /**
+   * Update products
+   * @param { Response } res Express response
+   * @param { ProductsInterface } body ProductsInterface
+   * @param { Express.Multer.File } file Express.Multer.File
+   */
+  public async updateProducts(
+    res: Response,
+    body: ProductsInterface,
+    id: string,
+  ): Promise<void | ResponseHandler> {
+    try {
+      // validate file
+      const product = await this.findById(id);
+      await this.update(id, body);
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        product,
+        "Producto creado correctamente."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

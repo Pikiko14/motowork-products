@@ -15,9 +15,10 @@ export interface AdditionalInfoInterface {
 
 export interface DetailsProducts {
   power: string;
-  licenseType: string;
-  storage: string;
-  testDrive: boolean;
+  weight: string;
+  max_power: string;
+  torque: string;
+  type_engine: string;
   colors: string[];
 }
 

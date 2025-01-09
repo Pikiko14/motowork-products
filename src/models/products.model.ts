@@ -85,9 +85,10 @@ const ProductSchema = new Schema<ProductsInterface>(
     // DETALLES
     details: {
       power: { type: String, required: true },
-      licenseType: { type: String, required: true },
-      storage: { type: String, required: true },
-      testDrive: { type: String, required: true },
+      weight: { type: String, required: true },
+      max_power: { type: String, required: true },
+      torque: { type: String, required: true },
+      type_engine: { type: String, required: true },
       colors: [{ type: String, required: true }],
     },
 

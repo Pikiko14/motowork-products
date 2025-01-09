@@ -77,5 +77,16 @@ router.delete(
   controller.deleteProduct,
 );
 
+/**
+ * Update products
+ */
+router.put(
+  "/:id",
+  sessionCheck,
+  perMissionMiddleware("update-products"),
+  ProductCreationValidator,
+  controller.updateProducts
+);
+
 // export router
 export { router };
