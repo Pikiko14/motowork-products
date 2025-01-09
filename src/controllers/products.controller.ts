@@ -165,8 +165,8 @@ export class ProductsController {
   deleteProductImage = async (req: RequestExt, res: Response) => {
     try {
       const { id } = req.params;
-      const { imageId } = req.query;
-      return await this.service.deleteProductImage(res, id, imageId as string);
+      const { imageId, type } = req.query;
+      return await this.service.deleteProductImage(res, id, imageId as string, type as string);
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }

@@ -1,11 +1,14 @@
 import { Response } from "express";
-import { ObjectId } from 'mongodb';
+import { ObjectId } from "mongodb";
 import { TaskQueue } from "../queues/cloudinary.queue";
 import { CloudinaryService } from "./cloudinary.service";
 import { ResponseHandler } from "../utils/responseHandler";
 import { PaginationInterface } from "../types/req-ext.interface";
 import ProductsRepository from "../repositories/products.repository";
-import { ProductImagesInterface, ProductsInterface } from "../types/products.interface";
+import {
+  ProductImagesInterface,
+  ProductsInterface,
+} from "../types/products.interface";
 
 export class ProductsService extends ProductsRepository {
   public path: String;
@@ -97,7 +100,7 @@ export class ProductsService extends ProductsRepository {
       // validate filter data
       if (query.filter) {
         const filter = JSON.parse(query.filter);
-        queryObj = {...queryObj, ...filter}
+        queryObj = { ...queryObj, ...filter };
       }
       // do query
       const fields = query.fields ? query.fields.split(",") : [];
@@ -138,91 +141,89 @@ export class ProductsService extends ProductsRepository {
     imagesDesktop: Express.Multer.File[],
     productId: string
   ): Promise<void> {
-    
-      // get product
-      const product = await this.findById(productId);
+    // get product
+    const product = await this.findById(productId);
 
-      // save mobile and desktop banner
-      if (bannerDesktop) {
-        await this.queue.addJob(
-          {
-            taskType: "uploadFile",
-            payload: {
-              file: bannerDesktop,
-              product,
-              folder: this.folder,
-              path: this.path,
-              entity: "banner",
-            },
+    // save mobile and desktop banner
+    if (bannerDesktop) {
+      await this.queue.addJob(
+        {
+          taskType: "uploadFile",
+          payload: {
+            file: bannerDesktop,
+            product,
+            folder: this.folder,
+            path: this.path,
+            entity: "banner",
           },
-          {
-            attempts: 3,
-            backoff: 5000,
-          }
-        );
-      }
+        },
+        {
+          attempts: 3,
+          backoff: 5000,
+        }
+      );
+    }
 
-      if (bannerMobile) {
-        await this.queue.addJob(
-          {
-            taskType: "uploadFile",
-            payload: {
-              file: bannerMobile,
-              product,
-              folder: this.folder,
-              path: this.path,
-              entity: "banner",
-            },
+    if (bannerMobile) {
+      await this.queue.addJob(
+        {
+          taskType: "uploadFile",
+          payload: {
+            file: bannerMobile,
+            product,
+            folder: this.folder,
+            path: this.path,
+            entity: "banner",
           },
-          {
-            attempts: 3,
-            backoff: 5000,
-          }
-        );
-      }
+        },
+        {
+          attempts: 3,
+          backoff: 5000,
+        }
+      );
+    }
 
-      // save desktop images
-      if (imagesDesktop && imagesDesktop.length > 0) {
-        await this.queue.addJob(
-          {
-            taskType: "uploadMultipleFiles",
-            payload: {
-              product,
-              images: imagesDesktop,
-              folder: this.folder,
-              path: this.path,
-              entity: "images",
-            },
+    // save desktop images
+    if (imagesDesktop && imagesDesktop.length > 0) {
+      await this.queue.addJob(
+        {
+          taskType: "uploadMultipleFiles",
+          payload: {
+            product,
+            images: imagesDesktop,
+            folder: this.folder,
+            path: this.path,
+            entity: "images",
           },
-          {
-            attempts: 3,
-            backoff: 5000,
-          }
-        );
-      }
+        },
+        {
+          attempts: 3,
+          backoff: 5000,
+        }
+      );
+    }
 
-      // save mobile images
-      if (imagesMobile && imagesMobile.length > 0) {
-        await this.queue.addJob(
-          {
-            taskType: "uploadMultipleFiles",
-            payload: {
-              product,
-              images: imagesMobile,
-              folder: this.folder,
-              path: this.path,
-              entity: "images",
-            },
+    // save mobile images
+    if (imagesMobile && imagesMobile.length > 0) {
+      await this.queue.addJob(
+        {
+          taskType: "uploadMultipleFiles",
+          payload: {
+            product,
+            images: imagesMobile,
+            folder: this.folder,
+            path: this.path,
+            entity: "images",
           },
-          {
-            attempts: 3,
-            backoff: 5000,
-          }
-        );
-      }
+        },
+        {
+          attempts: 3,
+          backoff: 5000,
+        }
+      );
+    }
 
-      return ResponseHandler.successResponse(res, product, "Imagenes subidas.");
-    
+    return ResponseHandler.successResponse(res, product, "Imagenes subidas.");
   }
 
   /**
@@ -233,7 +234,7 @@ export class ProductsService extends ProductsRepository {
    */
   public async showProduct(
     res: Response,
-    id: string,
+    id: string
   ): Promise<void | ResponseHandler> {
     try {
       const product = await this.findById(id);
@@ -242,7 +243,7 @@ export class ProductsService extends ProductsRepository {
       return ResponseHandler.successResponse(
         res,
         {
-          product
+          product,
         },
         "Información del producto."
       );
@@ -259,7 +260,7 @@ export class ProductsService extends ProductsRepository {
    */
   public async deleteProduct(
     res: Response,
-    id: string,
+    id: string
   ): Promise<void | ResponseHandler> {
     try {
       //  get product data
@@ -287,7 +288,7 @@ export class ProductsService extends ProductsRepository {
   public async updateProducts(
     res: Response,
     body: ProductsInterface,
-    id: string,
+    id: string
   ): Promise<void | ResponseHandler> {
     try {
       // validate file
@@ -305,20 +306,32 @@ export class ProductsService extends ProductsRepository {
     }
   }
 
-   /**
+  /**
    * Delete products image
    * @param { Response } res Express response
    * @param { ProductsInterface } id ProductsInterface
    * @param { Express.Multer.File } imageId Express.Multer.File
+   * @param { string } type
    */
-  public async deleteProductImage(res: Response, id: string, imageId: string) {
+  public async deleteProductImage(
+    res: Response,
+    id: string,
+    imageId: string,
+    type: string
+  ) {
     try {
       // delete image
-      const product = await this.findById(id) as ProductsInterface;
-      
-      const images = JSON.parse(JSON.stringify(product?.images));
-      
-      const imageToDelete = images.find((item: ProductImagesInterface) => item._id === imageId);
+      const product = (await this.findById(id)) as ProductsInterface;
+      let images = [];
+      if (type !== 'banner') {
+        images = JSON.parse(JSON.stringify(product?.images));
+      } else {
+        images = JSON.parse(JSON.stringify(product?.banner));
+      }
+
+      const imageToDelete = images.find(
+        (item: ProductImagesInterface) => item._id === imageId
+      );
 
       // delete in cloudinary
       if (imageToDelete) {
@@ -331,11 +344,17 @@ export class ProductsService extends ProductsRepository {
         );
       }
 
-      const newImages = images.filter((item: ProductImagesInterface) => item._id !== imageId);
+      const newImages = images.filter(
+        (item: ProductImagesInterface) => item._id !== imageId
+      );
 
       // save news images
-      product.images = newImages;
-      await this.update(id, product)
+      if (type !== 'banner') {
+        product.images = newImages;
+      } else {
+        product.banner = newImages;
+      }
+      await this.update(id, product);
 
       // return response
       return ResponseHandler.successResponse(
