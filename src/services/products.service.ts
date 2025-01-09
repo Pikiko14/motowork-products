@@ -1,10 +1,11 @@
 import { Response } from "express";
+import { ObjectId } from 'mongodb';
 import { TaskQueue } from "../queues/cloudinary.queue";
 import { CloudinaryService } from "./cloudinary.service";
 import { ResponseHandler } from "../utils/responseHandler";
-import { ProductsInterface } from "../types/products.interface";
 import { PaginationInterface } from "../types/req-ext.interface";
 import ProductsRepository from "../repositories/products.repository";
+import { ProductImagesInterface, ProductsInterface } from "../types/products.interface";
 
 export class ProductsService extends ProductsRepository {
   public path: String;
@@ -298,6 +299,49 @@ export class ProductsService extends ProductsRepository {
         res,
         product,
         "Producto creado correctamente."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+   /**
+   * Delete products image
+   * @param { Response } res Express response
+   * @param { ProductsInterface } id ProductsInterface
+   * @param { Express.Multer.File } imageId Express.Multer.File
+   */
+  public async deleteProductImage(res: Response, id: string, imageId: string) {
+    try {
+      // delete image
+      const product = await this.findById(id) as ProductsInterface;
+      
+      const images = JSON.parse(JSON.stringify(product?.images));
+      
+      const imageToDelete = images.find((item: ProductImagesInterface) => item._id === imageId);
+
+      // delete in cloudinary
+      if (imageToDelete) {
+        await this.queue.addJob(
+          { taskType: "deleteFile", payload: { file: imageToDelete.path } },
+          {
+            attempts: 3,
+            backoff: 5000,
+          }
+        );
+      }
+
+      const newImages = images.filter((item: ProductImagesInterface) => item._id !== imageId);
+
+      // save news images
+      product.images = newImages;
+      await this.update(id, product)
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        newImages,
+        "Imagen eliminada correctamente."
       );
     } catch (error: any) {
       throw new Error(error.message);

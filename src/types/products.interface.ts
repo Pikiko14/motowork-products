@@ -61,4 +61,5 @@ export interface ProductsBanners {
 export interface ProductImagesInterface {
   path: string;
   type: BannerType;
+  _id?: string;
 }

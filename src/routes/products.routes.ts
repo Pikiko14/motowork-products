@@ -88,5 +88,16 @@ router.put(
   controller.updateProducts
 );
 
+/**
+ * Delete product image
+ */
+router.delete(
+  "/:id/delete-image",
+  sessionCheck,
+  perMissionMiddleware("delete-products"),
+  ProductIdValidator,
+  controller.deleteProductImage
+);
+
 // export router
 export { router };
