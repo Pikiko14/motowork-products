@@ -8,6 +8,7 @@ import ProductsRepository from "../repositories/products.repository";
 import {
   ProductImagesInterface,
   ProductsInterface,
+  TypeProducts,
 } from "../types/products.interface";
 
 export class ProductsService extends ProductsRepository {
@@ -323,7 +324,7 @@ export class ProductsService extends ProductsRepository {
       // delete image
       const product = (await this.findById(id)) as ProductsInterface;
       let images = [];
-      if (type !== 'banner') {
+      if (type !== "banner") {
         images = JSON.parse(JSON.stringify(product?.images));
       } else {
         images = JSON.parse(JSON.stringify(product?.banner));
@@ -349,7 +350,7 @@ export class ProductsService extends ProductsRepository {
       );
 
       // save news images
-      if (type !== 'banner') {
+      if (type !== "banner") {
         product.images = newImages;
       } else {
         product.banner = newImages;
@@ -361,6 +362,84 @@ export class ProductsService extends ProductsRepository {
         res,
         newImages,
         "Imagen eliminada correctamente."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  /**
+   * Count products
+   * @param { Response } res Express response
+   * @param { string } type
+   */
+  public async getCountProducts(res: Response) {
+    try {
+      // count vehicles
+      const productsVehicle = await this.countDocument({
+        type: TypeProducts.vehicle,
+      });
+      const productsAccesories = await this.countDocument({
+        type: TypeProducts.product,
+      });
+
+      // get last items
+      const page: number = 1;
+      const perPage: number = 5;
+      const skip = (page - 1) * perPage;
+      let queryObj: any = {
+        type: TypeProducts.vehicle,
+      };
+
+      const lastFiveVehicles = await this.paginate(
+        queryObj,
+        skip,
+        perPage,
+        "createdAt",
+        "-1",
+        [
+          "name",
+          "category",
+          "price",
+          "discount",
+          "state",
+          "brand_icon",
+          "model",
+          "banner",
+        ]
+      );
+
+      queryObj = {
+        type: TypeProducts.product,
+      };
+      const lastFiveAccesories = await this.paginate(
+        queryObj,
+        skip,
+        perPage,
+        "createdAt",
+        "-1",
+        [
+          "name",
+          "category",
+          "price",
+          "discount",
+          "state",
+          "brand_icon",
+          "model",
+          "banner",
+        ]
+      );
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        {
+          countVehicle: productsVehicle || 0,
+          countAccesories: productsAccesories || 0,
+          lastVehicles: lastFiveVehicles.data,
+          lastProduct: lastFiveAccesories.data
+        },
+        "Datos del dashboard."
       );
     } catch (error: any) {
       throw new Error(error.message);

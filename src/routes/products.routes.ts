@@ -99,5 +99,15 @@ router.delete(
   controller.deleteProductImage
 );
 
+/**
+ * Count product
+ */
+router.get(
+  '/count-products/get',
+  sessionCheck,
+  perMissionMiddleware("list-products"),
+  controller.getCountProducts,
+);
+
 // export router
 export { router };

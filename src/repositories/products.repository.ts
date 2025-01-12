@@ -105,6 +105,11 @@ class ProductsRepository {
   public async findById(id: string): Promise<ProductsInterface | null> {
     return await this.model.findById(id);
   }
+
+  // count documents
+  public async countDocument(query: any): Promise<number> {
+    return await this.model.countDocuments(query);
+  }
 }
 
 export default ProductsRepository;
