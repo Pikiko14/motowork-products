@@ -109,5 +109,14 @@ router.get(
   controller.getCountProducts,
 );
 
+/**
+ * Get products
+ */
+router.get(
+  "/list/from-web",
+  PaginationValidator,
+  controller.getProducts
+);
+
 // export router
 export { router };
