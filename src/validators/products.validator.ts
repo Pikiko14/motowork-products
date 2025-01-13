@@ -40,6 +40,8 @@ const ProductCreationValidator = [
     .withMessage("El precio debe ser un número mayor a 0."),
   check("discount")
     .optional(),
+  check("sku")
+    .optional(),
   check("category")
     .notEmpty()
     .withMessage("La categoría es obligatoria.")
