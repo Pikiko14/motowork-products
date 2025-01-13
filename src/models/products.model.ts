@@ -45,6 +45,10 @@ const ProductSchema = new Schema<ProductsInterface>(
     description: {
       type: String,
     },
+    sku: {
+      type: String,
+      required: false,
+    },
     banner: [
       {
         type_banner: {
@@ -84,12 +88,12 @@ const ProductSchema = new Schema<ProductsInterface>(
 
     // DETALLES
     details: {
-      power: { type: String, required: true },
-      weight: { type: String, required: true },
-      max_power: { type: String, required: true },
-      torque: { type: String, required: true },
-      type_engine: { type: String, required: true },
-      colors: [{ type: String, required: true }],
+      power: { type: String, required: false },
+      weight: { type: String, required: false },
+      max_power: { type: String, required: false },
+      torque: { type: String, required: false },
+      type_engine: { type: String, required: false },
+      colors: [{ type: String, required: false }],
     },
 
     // INFO ADICIONAL

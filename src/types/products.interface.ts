@@ -33,6 +33,7 @@ export interface ProductsInterface {
   price: number;
   discount?: number;
   category: string;
+  sku?: string;
   type: TypeProducts;
   description?: string;
   banner: ProductsBanners[];
