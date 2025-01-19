@@ -140,7 +140,7 @@ const ProductCreationValidator = [
     .optional()
     .isString()
     .withMessage("La descripción debe ser un string.")
-    .isLength({ min: 1, max: 1500 })
+    .isLength({ min: 0, max: 1500 })
     .withMessage("La descripción debe tener entre 1 y 1500 caracteres."),
   check("variants.*.image")
     .optional()
