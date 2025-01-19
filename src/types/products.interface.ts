@@ -42,6 +42,14 @@ export interface ProductsInterface {
   additionalInfo: AdditionalInfoInterface[];
   createdAt: Date;
   active: boolean;
+  variants?: VariantInterface[];
+}
+
+export interface VariantInterface {
+  sku: string;
+  attribute: string;
+  description?: string;
+  image?: string;
 }
 
 export enum TypeProducts {

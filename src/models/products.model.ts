@@ -109,6 +109,16 @@ const ProductSchema = new Schema<ProductsInterface>(
         ],
       },
     ],
+
+    // variants
+    variants: [
+      {
+        sku: { type: String, default: '', require: true },
+        attribute: { type: String, default: '', require: true },
+        description: { type: String, default: '', require: false },
+        attribimageute: { type: String, default: '', require: false },
+      }
+    ]
   },
   {
     timestamps: true,

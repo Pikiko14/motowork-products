@@ -38,10 +38,8 @@ const ProductCreationValidator = [
     .withMessage("El precio es obligatorio.")
     .isFloat({ gt: 0 })
     .withMessage("El precio debe ser un número mayor a 0."),
-  check("discount")
-    .optional(),
-  check("sku")
-    .optional(),
+  check("discount").optional(),
+  check("sku").optional(),
   check("category")
     .notEmpty()
     .withMessage("La categoría es obligatoria.")
@@ -120,9 +118,36 @@ const ProductCreationValidator = [
     .optional()
     .isString()
     .withMessage("El valor del campo debe ser un texto."),
+
+  // variables
+  check("variants")
+    .optional()
+    .isArray()
+    .withMessage("Las variables deben ser un array."),
+  check("variants.*.sku")
+    .notEmpty()
+    .isString()
+    .withMessage("El SKU debe ser un texto.")
+    .isLength({ min: 1, max: 60 })
+    .withMessage("El SKU debe tener entre 1 y 60 caracteres."),
+  check("variants.*.attribute")
+    .notEmpty()
+    .isString()
+    .withMessage("El atributo debe ser un texto.")
+    .isLength({ min: 1, max: 60 })
+    .withMessage("El atributo debe tener entre 1 y 60 caracteres."),
+  check("variants.*.description")
+    .optional()
+    .isString()
+    .withMessage("La descripción debe ser un string.")
+    .isLength({ min: 1, max: 1500 })
+    .withMessage("La descripción debe tener entre 1 y 1500 caracteres."),
+  check("variants.*.image")
+    .optional()
+    .isString()
+    .withMessage("La imagen debe ser un string."),
   (req: Request, res: Response, next: NextFunction) =>
     handlerValidator(req, res, next),
-  
 ];
 
 const ProductIdValidator = [
@@ -137,7 +162,7 @@ const ProductIdValidator = [
       const product = await repository.findById(value);
       if (!product) {
         throw new Error("El producto no existe.");
-      };
+      }
     }),
   (req: Request, res: Response, next: NextFunction) =>
     handlerValidator(req, res, next),
