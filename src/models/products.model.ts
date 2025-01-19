@@ -116,7 +116,7 @@ const ProductSchema = new Schema<ProductsInterface>(
         sku: { type: String, default: '', require: true },
         attribute: { type: String, default: '', require: true },
         description: { type: String, default: '', require: false },
-        attribimageute: { type: String, default: '', require: false },
+        image: { type: String, default: '', require: false },
       }
     ]
   },
