@@ -28,4 +28,6 @@ export interface PaginationInterface {
   order?: string;
   fields?: string;
   filter?: string;
+  state?: string;
+  category?: string;
 }

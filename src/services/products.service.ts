@@ -98,11 +98,22 @@ export class ProductsService extends ProductsRepository {
         queryObj.type = query.type;
       }
 
+      // state products
+      if (query.state) {
+        queryObj.state = query.state;
+      }
+
+      // category products
+      if (query.category) {
+        queryObj.category = query.category;
+      }
+
       // validate filter data
       if (query.filter) {
         const filter = JSON.parse(query.filter);
         queryObj = { ...queryObj, ...filter };
       }
+
       // do query
       const fields = query.fields ? query.fields.split(",") : [];
       const products = await this.paginate(
