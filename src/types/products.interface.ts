@@ -14,7 +14,7 @@ export interface AdditionalInfoInterface {
 }
 
 export interface DetailsProducts {
-  power: string;
+  power: number;
   weight: string;
   max_power: string;
   torque: string;

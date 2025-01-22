@@ -62,8 +62,8 @@ const ProductCreationValidator = [
   // DETALLES
   check("details.power")
     .optional()
-    .isString()
-    .withMessage("La potencia debe ser un texto."),
+    .isNumeric()
+    .withMessage("La potencia debe ser un numero."),
   check("details.weight")
     .optional()
     .isString()

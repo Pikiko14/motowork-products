@@ -109,10 +109,25 @@ export class ProductsService extends ProductsRepository {
       }
 
       // validate filter data
-      if (query.filter) {
+      if (query.filter && !query.filter.includes('min')) {
         const filter = JSON.parse(query.filter);
         queryObj = { ...queryObj, ...filter };
       }
+
+      if (query.filter && query.filter.includes('min')) {
+        const filter = JSON.parse(query.filter);
+        queryObj = { ...queryObj, ...filter };
+        if (queryObj.price) {
+          const { min, max } = queryObj.price;
+          queryObj.price = { $gte: min, $lte: max };
+        }
+
+        if (queryObj.power) {
+          const { min, max } = queryObj.power;
+          queryObj['details.power'] = { $gte: min, $lte: max };
+        }
+      }
+      console.log(queryObj)
 
       // do query
       const fields = query.fields ? query.fields.split(",") : [];

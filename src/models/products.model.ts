@@ -88,7 +88,7 @@ const ProductSchema = new Schema<ProductsInterface>(
 
     // DETALLES
     details: {
-      power: { type: String, required: false },
+      power: { type: Number, required: false },
       weight: { type: String, required: false },
       max_power: { type: String, required: false },
       torque: { type: String, required: false },
