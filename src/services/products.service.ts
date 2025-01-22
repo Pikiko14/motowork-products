@@ -119,15 +119,15 @@ export class ProductsService extends ProductsRepository {
         queryObj = { ...queryObj, ...filter };
         if (queryObj.price) {
           const { min, max } = queryObj.price;
-          queryObj.price = { $gte: min, $lte: max };
+          queryObj.price = { $gte:  Number(min), $lte:  Number(max) };
         }
 
         if (queryObj.power) {
           const { min, max } = queryObj.power;
-          queryObj['details.power'] = { $gte: min, $lte: max };
+          queryObj['details.power'] = { $gte:  Number(min), $lte:  Number(max) };
+          delete queryObj.power;
         }
       }
-      console.log(queryObj)
 
       // do query
       const fields = query.fields ? query.fields.split(",") : [];
