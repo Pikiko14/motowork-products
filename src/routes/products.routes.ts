@@ -118,5 +118,14 @@ router.get(
   controller.getProducts
 );
 
+/**
+ * Show products
+ */
+router.get(
+  "/list/from-web/:id",
+  PaginationValidator,
+  controller.showProduct
+);
+
 // export router
 export { router };
