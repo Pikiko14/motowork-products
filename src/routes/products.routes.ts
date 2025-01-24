@@ -122,8 +122,8 @@ router.get(
  * Show products
  */
 router.get(
-  "/list/from-web/:id",
-  PaginationValidator,
+  "/show/from-web/:id",
+  ProductIdValidator,
   controller.showProduct
 );
 
