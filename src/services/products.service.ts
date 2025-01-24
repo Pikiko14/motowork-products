@@ -108,6 +108,11 @@ export class ProductsService extends ProductsRepository {
         queryObj.category = query.category;
       }
 
+      // category products
+      if (query.brand) {
+        queryObj.brand = query.brand;
+      }
+
       // validate filter data
       if (query.filter && !query.filter.includes('min')) {
         const filter = JSON.parse(query.filter);

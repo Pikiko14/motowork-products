@@ -39,6 +39,8 @@ const PaginationValidator = [
     .optional(),
   check("category")
     .optional(),
+  check("brand")
+    .optional(),
   check("state")
     .optional(),
   (req: Request, res: Response, next: NextFunction) =>

@@ -30,4 +30,5 @@ export interface PaginationInterface {
   filter?: string;
   state?: string;
   category?: string;
+  brand?: string;
 }
