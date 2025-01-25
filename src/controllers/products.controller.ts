@@ -115,6 +115,21 @@ export class ProductsController {
     }
   };
 
+   /**
+   * Show product from web
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+   showProductFromWeb = async (req: RequestExt, res: Response) => {
+    try {
+      const { id } = req.params;
+      return await this.service.showProductFromWeb(res, id);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
+
   /**
    * delete products*
    * @param req Express request

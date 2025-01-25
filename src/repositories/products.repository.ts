@@ -110,6 +110,18 @@ class ProductsRepository {
   public async countDocument(query: any): Promise<number> {
     return await this.model.countDocuments(query);
   }
+
+  // get similar products
+  public async getSimilarProducts(category?: string, productId?: string, limit = 4) {
+    return await this.model.aggregate([
+      { $match: {
+          category,
+          _id: { $ne: productId }, // Convertir productId a ObjectId
+        }
+      },
+      { $sample: { size: limit } },
+    ]);
+  }
 }
 
 export default ProductsRepository;

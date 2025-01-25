@@ -285,6 +285,36 @@ export class ProductsService extends ProductsRepository {
   }
 
   /**
+   * Show product from web
+   * @param { Response } res Express response
+   * @param { string } id query of list
+   * @return { Promise<void | ResponseRequestInterface> }
+   */
+  public async showProductFromWeb(
+    res: Response,
+    id: string
+  ): Promise<void | ResponseHandler> {
+    try {
+      const product = await this.findById(id);
+      const similarProduct = await this.getSimilarProducts(product?.category, product?._id, 4)
+
+      // return data
+      return ResponseHandler.successResponse(
+        res,
+        {
+          product,
+          similarProduct
+        },
+        "Información del producto."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  
+
+  /**
    * Delete product
    * @param { Response } res Express response
    * @param { string } id query of list

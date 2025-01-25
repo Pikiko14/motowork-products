@@ -124,7 +124,7 @@ router.get(
 router.get(
   "/show/from-web/:id",
   ProductIdValidator,
-  controller.showProduct
+  controller.showProductFromWeb
 );
 
 // export router
