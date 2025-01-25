@@ -84,9 +84,14 @@ const ProductCreationValidator = [
     .optional()
     .isArray({ min: 0 })
     .withMessage("Los colores deben ser un array con al menos un valor."),
-  check("details.colors.*")
+  check("details.colors.*.hex")
+    .notEmpty()
     .isString()
     .withMessage("Cada color debe ser un texto."),
+  check("details.colors.*.image")
+    .optional()
+    .isString()
+    .withMessage("La imagen debe ser un string."),
 
   // INFO ADICIONAL
   check("additionalInfo")

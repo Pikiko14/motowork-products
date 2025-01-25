@@ -93,7 +93,12 @@ const ProductSchema = new Schema<ProductsInterface>(
       max_power: { type: String, required: false },
       torque: { type: String, required: false },
       type_engine: { type: String, required: false },
-      colors: [{ type: String, required: false }],
+      colors: [
+        {
+          hex: { type: String, required: false },
+          image: { type: String, required: false }
+        }
+      ],
     },
 
     // INFO ADICIONAL

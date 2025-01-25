@@ -19,7 +19,12 @@ export interface DetailsProducts {
   max_power: string;
   torque: string;
   type_engine: string;
-  colors: string[];
+  colors: ColorsInterface[];
+}
+
+export interface ColorsInterface {
+  hex: string;
+  image?: string;
 }
 
 export interface ProductsInterface {
