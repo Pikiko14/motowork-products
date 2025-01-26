@@ -7,6 +7,7 @@ import perMissionMiddleware from "../middlewares/permission.middleware";
 import {
   ProductCreationValidator,
   ProductIdValidator,
+  ProductReviewValidator,
 } from "../validators/products.validator";
 
 // init router
@@ -125,6 +126,16 @@ router.get(
   "/show/from-web/:id",
   ProductIdValidator,
   controller.showProductFromWeb
+);
+
+/**
+ * rate product
+ */
+router.post(
+  "/:id/review",
+  ProductIdValidator,
+  ProductReviewValidator,
+  controller.addReview
 );
 
 // export router

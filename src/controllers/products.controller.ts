@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import { ResponseHandler } from "../utils/responseHandler";
 import { ProductsService } from "../services/products.service";
-import { ProductsInterface } from "../types/products.interface";
+import {
+  ProductsInterface,
+  ReviewsInterface,
+} from "../types/products.interface";
 import { ResponseRequestInterface } from "../types/response.interface";
 import { PaginationInterface, RequestExt } from "../types/req-ext.interface";
 
@@ -115,13 +118,13 @@ export class ProductsController {
     }
   };
 
-   /**
+  /**
    * Show product from web
    * @param req Express request
    * @param res Express response
    * @returns Promise<void>
    */
-   showProductFromWeb = async (req: RequestExt, res: Response) => {
+  showProductFromWeb = async (req: RequestExt, res: Response) => {
     try {
       const { id } = req.params;
       return await this.service.showProductFromWeb(res, id);
@@ -143,7 +146,7 @@ export class ProductsController {
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
-  }
+  };
 
   /**
    * Update product
@@ -161,11 +164,7 @@ export class ProductsController {
       const { id } = req.params;
 
       // store brand
-      return await this.service.updateProducts(
-        res,
-        body,
-        id,
-      );
+      return await this.service.updateProducts(res, body, id);
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
@@ -181,11 +180,16 @@ export class ProductsController {
     try {
       const { id } = req.params;
       const { imageId, type } = req.query;
-      return await this.service.deleteProductImage(res, id, imageId as string, type as string);
+      return await this.service.deleteProductImage(
+        res,
+        id,
+        imageId as string,
+        type as string
+      );
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
-  }
+  };
 
   /**
    * get count products
@@ -199,5 +203,20 @@ export class ProductsController {
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
-  }
+  };
+
+  /**
+   * add review to  products
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  addReview = async (req: RequestExt, res: Response) => {
+    try {
+      const body = matchedData(req) as ReviewsInterface;
+      return await this.service.addReview(res, body);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
 }

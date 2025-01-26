@@ -9,6 +9,7 @@ import {
   ProductImagesInterface,
   ProductsInterface,
   TypeProducts,
+  ReviewsInterface,
 } from "../types/products.interface";
 
 export class ProductsService extends ProductsRepository {
@@ -501,6 +502,36 @@ export class ProductsService extends ProductsRepository {
           lastProduct: lastFiveAccesories.data
         },
         "Datos del dashboard."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  /**
+   * Add review to product
+   * @param { Response } res Express response
+   * @param { ReviewsInterface }
+   */
+  public async addReview(res: Response, body: ReviewsInterface) {
+    try {
+      const product = await this.findById(body.id as string);
+
+      if (product) {
+        product.reviews.push({
+          amount: body.quantity as number,
+          name: body.name,
+          description: ''
+        });
+        await this.update(body.id, product);
+      }
+      
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        { product },
+        "Review agregada correctamente."
       );
     } catch (error: any) {
       throw new Error(error.message);

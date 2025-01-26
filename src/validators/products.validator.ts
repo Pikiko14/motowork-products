@@ -1,7 +1,7 @@
 import { check } from "express-validator";
-import ProductsRepository from "./../repositories/products.repository";
 import { NextFunction, Request, Response } from "express";
 import { handlerValidator } from "../utils/handler.validator";
+import ProductsRepository from "./../repositories/products.repository";
 
 const repository = new ProductsRepository();
 
@@ -58,6 +58,7 @@ const ProductCreationValidator = [
     .isLength({ min: 1, max: 10 })
     .withMessage("El tipo debe tener entre 1 y 10 caracteres."),
   check("brand_icon").optional(),
+  check("reviews").optional(),
 
   // DETALLES
   check("details.power")
@@ -173,4 +174,25 @@ const ProductIdValidator = [
     handlerValidator(req, res, next),
 ];
 
-export { ProductCreationValidator, ProductIdValidator };
+const ProductReviewValidator = [
+  check("name")
+    .exists()
+    .withMessage("Debes especificar un nombre.")
+    .notEmpty()
+    .withMessage("El nombre no puede estar vacio.")
+    .isLength({ min: 1, max: 90 })
+    .withMessage("El nombre debe tener entre 1 y 90 caracteres."),
+  check("quantity")
+    .exists()
+    .withMessage("Debes especificar la puntuación.")
+    .notEmpty()
+    .withMessage("La puntuación no puede estar vacio.")
+    .isNumeric()
+    .withMessage("La puntuación debe ser un valor numérico"),
+  check("description")
+    .optional(),
+  (req: Request, res: Response, next: NextFunction) =>
+    handlerValidator(req, res, next),
+];
+
+export { ProductCreationValidator, ProductIdValidator, ProductReviewValidator };

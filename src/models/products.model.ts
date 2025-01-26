@@ -1,10 +1,12 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model } from "mongoose";
 import { TaskQueue } from "../queues/cloudinary.queue";
 import {
   ProductsInterface,
   TypeProducts,
   BannerType,
 } from "../types/products.interface";
+import { Utils } from "../utils/utils";
+const utils = new Utils();
 
 const ProductSchema = new Schema<ProductsInterface>(
   {
@@ -85,6 +87,26 @@ const ProductSchema = new Schema<ProductsInterface>(
       required: false,
       default: true,
     },
+    reviews: [
+      {
+        date: {
+          type: String,
+          default: utils.getCurrentDate()
+        },
+        amount: {
+          type: Number,
+          required: false,
+        },
+        name: {
+          type: String,
+          required: true
+        },
+        description: {
+          type: String,
+          required: false
+        }
+      }
+    ],
 
     // DETALLES
     details: {

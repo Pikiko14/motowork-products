@@ -48,6 +48,16 @@ export interface ProductsInterface {
   createdAt: Date;
   active: boolean;
   variants?: VariantInterface[];
+  reviews: ReviewsInterface[];
+}
+
+export interface ReviewsInterface {
+  date?: string;
+  amount: number;
+  name: string;
+  description?: string;
+  id?: string;
+  quantity?: number;
 }
 
 export interface VariantInterface {
