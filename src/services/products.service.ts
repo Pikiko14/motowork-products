@@ -521,7 +521,7 @@ export class ProductsService extends ProductsRepository {
         product.reviews.push({
           amount: body.quantity as number,
           name: body.name,
-          description: ''
+          description: body.description || ''
         });
         await this.update(body.id, product);
       }
@@ -531,7 +531,7 @@ export class ProductsService extends ProductsRepository {
       return ResponseHandler.successResponse(
         res,
         { product },
-        "Review agregada correctamente."
+        "Calificación agregada correctamente."
       );
     } catch (error: any) {
       throw new Error(error.message);
