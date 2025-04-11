@@ -217,24 +217,26 @@ export class ProductsService extends ProductsRepository {
     }
 
     // save desktop images
-    if (imagesDesktop && imagesDesktop.length > 0) {
-      await this.queue.addJob(
-        {
-          taskType: "uploadMultipleFiles",
-          payload: {
-            product,
-            images: imagesDesktop,
-            folder: this.folder,
-            path: this.path,
-            entity: "images",
+    setTimeout(async () => {
+      if (imagesDesktop && imagesDesktop.length > 0) {
+        await this.queue.addJob(
+          {
+            taskType: "uploadMultipleFiles",
+            payload: {
+              product,
+              images: imagesDesktop,
+              folder: this.folder,
+              path: this.path,
+              entity: "images",
+            },
           },
-        },
-        {
-          attempts: 3,
-          backoff: 5000,
-        }
-      );
-    }
+          {
+            attempts: 3,
+            backoff: 5000,
+          }
+        );
+      }
+    }, 5000)
 
     // save mobile images
     if (imagesMobile && imagesMobile.length > 0) {
