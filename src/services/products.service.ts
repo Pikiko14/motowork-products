@@ -358,6 +358,7 @@ export class ProductsService extends ProductsRepository {
     try {
       // validate file
       const product = await this.findById(id);
+      console.log(body);
       await this.update(id, body);
 
       // return response

@@ -24,6 +24,11 @@ const ProductSchema = new Schema<ProductsInterface>(
       enum: ["Nueva", "Usada"],
       required: true,
     },
+    dive_test: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     brand: {
       type: String,
       required: true,

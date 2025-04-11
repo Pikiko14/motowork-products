@@ -59,6 +59,8 @@ const ProductCreationValidator = [
     .withMessage("El tipo debe tener entre 1 y 10 caracteres."),
   check("brand_icon").optional(),
   check("reviews").optional(),
+  check("dive_test")
+    .optional(),
 
   // DETALLES
   check("details.power")

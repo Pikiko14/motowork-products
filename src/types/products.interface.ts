@@ -33,6 +33,7 @@ export interface ProductsInterface {
   name: string;
   model: string;
   state: "Nueva" | "Usada";
+  dive_test: boolean;
   brand: string;
   brand_icon?: string;
   price: number;
