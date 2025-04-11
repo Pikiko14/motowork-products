@@ -31,7 +31,7 @@ export class TaskQueue<T> extends productsRepository {
    * Inicializa el procesador de la cola
    */
   private initializeProcessor() {
-    this.queue.process(async (job: Job<T>) => {
+    this.queue.process(1, async (job: Job<T>) => {
       try {
         console.log(`Procesando trabajo: ${job.id}`);
         await this.handleTask(job);
