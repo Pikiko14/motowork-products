@@ -138,5 +138,13 @@ router.post(
   controller.addReview
 );
 
+/**
+ * Get products most sell data
+ */
+router.get(
+  "/most-sells/from-web",
+  controller.getMostSellProducts
+);
+
 // export router
 export { router };

@@ -219,4 +219,19 @@ export class ProductsController {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
+
+  /**
+   * Get most sell products
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  getMostSellProducts = async (req: RequestExt, res: Response) => {
+    try {
+      const { products } = req.query;
+      return await this.service.getMotstProductsSells(res, products as string);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
 }

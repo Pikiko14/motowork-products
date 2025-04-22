@@ -540,4 +540,26 @@ export class ProductsService extends ProductsRepository {
       throw new Error(error.message);
     }
   }
+
+  /**
+   * Get most sell products data
+   * @param res 
+   * @param products 
+   * @returns 
+   */
+  public async getMotstProductsSells(res: Response, products: string) {
+    try {
+      // most sell
+      const productsArr = await this.getMostSellesData(products);
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        productsArr,
+        "Productos mas vendidos."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

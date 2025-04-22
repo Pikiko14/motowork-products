@@ -23,9 +23,7 @@ class ProductsRepository {
    * Save proeduct in bbdd
    * @param product User
    */
-  public async create(
-    product: ProductsInterface
-  ): Promise<ProductsInterface> {
+  public async create(product: ProductsInterface): Promise<ProductsInterface> {
     const productBd = await this.model.create(product);
     return productBd;
   }
@@ -63,14 +61,18 @@ class ProductsRepository {
 
       const validSortFields = ["name", "createdAt", "price"];
       if (!validSortFields.includes(sortBy)) {
-        throw new Error(`Invalid sort field. Allowed fields are: ${validSortFields.join(", ")}`);
+        throw new Error(
+          `Invalid sort field. Allowed fields are: ${validSortFields.join(
+            ", "
+          )}`
+        );
       }
 
       // Fetch paginated data
       const products = await this.model
         .find(query)
         .sort({ [sortBy]: order })
-        .select(fields.length > 0 ? fields.join(' ') : '')
+        .select(fields.length > 0 ? fields.join(" ") : "")
         .skip(skip)
         .limit(perPage);
 
@@ -94,7 +96,9 @@ class ProductsRepository {
    * Delete products by id
    * @param id
    */
-  public async delete(id: string): Promise<ProductsInterface | void | null | any> {
+  public async delete(
+    id: string
+  ): Promise<ProductsInterface | void | null | any> {
     return await this.model.findOneAndDelete({ _id: id });
   }
 
@@ -112,15 +116,35 @@ class ProductsRepository {
   }
 
   // get similar products
-  public async getSimilarProducts(category?: string, productId?: string, limit = 4) {
+  public async getSimilarProducts(
+    category?: string,
+    productId?: string,
+    limit = 4
+  ) {
     return await this.model.aggregate([
-      { $match: {
+      {
+        $match: {
           category,
           _id: { $ne: productId }, // Convertir productId a ObjectId
-        }
+        },
       },
       { $sample: { size: limit } },
     ]);
+  }
+
+  /**
+   * Get most sellers products
+   * @param { string } skuString
+   * @returns
+   */
+  public async getMostSellesData(skuString: string) {
+    const skuList = skuString.split(",");
+    return await this.model.find(
+      {
+        sku: { $in: skuList },
+      },
+      { _id: 1, name: 1, price: 1, sku: 1, image: 1, images: 1 }
+    );
   }
 }
 
