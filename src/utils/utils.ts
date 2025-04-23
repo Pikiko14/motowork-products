@@ -108,7 +108,7 @@ class Utils {
    */
   getPath = async (path: string): Promise<string | undefined> => {
     let pathSplit = path.split("/").pop();
-    if (path.includes('products')) {
+    if (path.includes("products")) {
       pathSplit = "products";
     }
 
@@ -210,6 +210,45 @@ class Utils {
   generateBuffer = async (path: string): Promise<Buffer> => {
     const buffer = await fs.readFileSync(path);
     return buffer;
+  };
+
+  getDateRange = (period: string) => {
+    const now = new Date();
+    let startDate, endDate;
+
+    switch (period) {
+      case "week":
+        const day = now.getDay(); // 0 (domingo) - 6 (sábado)
+        const diffToMonday = (day === 0 ? -6 : 1) - day;
+
+        startDate = new Date(now);
+        startDate.setDate(now.getDate() + diffToMonday);
+        startDate.setHours(0, 0, 0, 0);
+
+        endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6);
+        endDate.setHours(23, 59, 59, 999);
+        break;
+
+      case "month":
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(23, 59, 59, 999);
+        break;
+
+      case "year":
+        startDate = new Date(now.getFullYear(), 0, 1);
+        endDate = new Date(now.getFullYear(), 11, 31);
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(23, 59, 59, 999);
+        break;
+
+      default:
+        throw new Error('Período no válido. Usa "week", "month" o "year".');
+    }
+
+    return { startDate, endDate };
   };
 }
 

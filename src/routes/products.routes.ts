@@ -146,5 +146,15 @@ router.get(
   controller.getMostSellProducts
 );
 
+/**
+ * List public count
+ */
+router.get(
+  '/publish-products/count',
+  sessionCheck,
+  perMissionMiddleware("list-products"),
+  controller.countPublishProduct,
+);
+
 // export router
 export { router };

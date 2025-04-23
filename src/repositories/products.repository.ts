@@ -146,6 +146,39 @@ class ProductsRepository {
       { _id: 1, name: 1, price: 1, sku: 1, banner: 1 }
     );
   }
+
+  /**
+   * get count product publish
+   * @param from
+   * @param to
+   * @returns 
+   */
+  loadPorductPublishInPeriod = async (from: Date, to: Date) => {
+    const results = await this.model.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: from,
+            $lte: to,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+          },
+          products: { $push: "$$ROOT" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 }, // orden ascendente por fecha
+      },
+    ]);
+  
+    return results;
+  }
 }
 
 export default ProductsRepository;

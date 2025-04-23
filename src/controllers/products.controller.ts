@@ -234,4 +234,19 @@ export class ProductsController {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
+
+  /**
+   * get count products
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  countPublishProduct = async (req: RequestExt, res: Response) => {
+    try {
+      const { period } = req.query;
+      return await this.service.countPublishProduct(res, period as string);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
 }

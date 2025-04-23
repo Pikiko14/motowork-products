@@ -1,26 +1,28 @@
-import { Response } from "express";
-import { ObjectId } from "mongodb";
-import { TaskQueue } from "../queues/cloudinary.queue";
-import { CloudinaryService } from "./cloudinary.service";
-import { ResponseHandler } from "../utils/responseHandler";
-import { PaginationInterface } from "../types/req-ext.interface";
-import ProductsRepository from "../repositories/products.repository";
 import {
   ProductImagesInterface,
   ProductsInterface,
   TypeProducts,
   ReviewsInterface,
 } from "../types/products.interface";
+import { Response } from "express";
+import { Utils } from "../utils/utils";
+import { TaskQueue } from "../queues/cloudinary.queue";
+import { CloudinaryService } from "./cloudinary.service";
+import { ResponseHandler } from "../utils/responseHandler";
+import { PaginationInterface } from "../types/req-ext.interface";
+import ProductsRepository from "../repositories/products.repository";
 
 export class ProductsService extends ProductsRepository {
   public path: String;
   public queue: any;
+  public utils: Utils
   public folder: string = "products";
   public cloudinaryService: CloudinaryService;
 
   constructor() {
     super();
     this.path = "/products/";
+    this.utils = new Utils();
     this.queue = new TaskQueue("cloudinary_products");
     this.queue.setupListeners();
     this.cloudinaryService = new CloudinaryService();
@@ -557,6 +559,30 @@ export class ProductsService extends ProductsRepository {
         res,
         productsArr,
         "Productos mas vendidos."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  /**
+   * count product publish by period
+   * @param { Response } res
+   * @param { string } period
+   */
+  public async countPublishProduct(res: Response, period: string) {
+    try {
+      // most sell
+      const dates = this.utils.getDateRange(period);
+      const publishProduct = await this.loadPorductPublishInPeriod(dates.startDate, dates.endDate) 
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        {
+          products: publishProduct,
+        },
+        "Productos publicados."
       );
     } catch (error: any) {
       throw new Error(error.message);
