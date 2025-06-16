@@ -249,4 +249,18 @@ export class ProductsController {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
+
+  /**
+   * create from contapyme
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  createFromContapyme = async (req: RequestExt, res: Response) => {
+    try {
+      return await this.service.createFromContapyme(res, req.body);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
 }

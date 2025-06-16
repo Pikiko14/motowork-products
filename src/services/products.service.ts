@@ -15,7 +15,7 @@ import ProductsRepository from "../repositories/products.repository";
 export class ProductsService extends ProductsRepository {
   public path: String;
   public queue: any;
-  public utils: Utils
+  public utils: Utils;
   public folder: string = "products";
   public cloudinaryService: CloudinaryService;
 
@@ -117,22 +117,22 @@ export class ProductsService extends ProductsRepository {
       }
 
       // validate filter data
-      if (query.filter && !query.filter.includes('min')) {
+      if (query.filter && !query.filter.includes("min")) {
         const filter = JSON.parse(query.filter);
         queryObj = { ...queryObj, ...filter };
       }
 
-      if (query.filter && query.filter.includes('min')) {
+      if (query.filter && query.filter.includes("min")) {
         const filter = JSON.parse(query.filter);
         queryObj = { ...queryObj, ...filter };
         if (queryObj.price) {
           const { min, max } = queryObj.price;
-          queryObj.price = { $gte:  Number(min), $lte:  Number(max) };
+          queryObj.price = { $gte: Number(min), $lte: Number(max) };
         }
 
         if (queryObj.power) {
           const { min, max } = queryObj.power;
-          queryObj['details.power'] = { $gte:  Number(min), $lte:  Number(max) };
+          queryObj["details.power"] = { $gte: Number(min), $lte: Number(max) };
           delete queryObj.power;
         }
       }
@@ -238,7 +238,7 @@ export class ProductsService extends ProductsRepository {
           }
         );
       }
-    }, 5000)
+    }, 5000);
 
     // save mobile images
     if (imagesMobile && imagesMobile.length > 0) {
@@ -301,14 +301,18 @@ export class ProductsService extends ProductsRepository {
   ): Promise<void | ResponseHandler> {
     try {
       const product = await this.findById(id);
-      const similarProduct = await this.getSimilarProducts(product?.category, product?._id, 4)
+      const similarProduct = await this.getSimilarProducts(
+        product?.category,
+        product?._id,
+        4
+      );
 
       // return data
       return ResponseHandler.successResponse(
         res,
         {
           product,
-          similarProduct
+          similarProduct,
         },
         "Información del producto."
       );
@@ -316,8 +320,6 @@ export class ProductsService extends ProductsRepository {
       throw new Error(error.message);
     }
   }
-
-  
 
   /**
    * Delete product
@@ -504,7 +506,7 @@ export class ProductsService extends ProductsRepository {
           countVehicle: productsVehicle || 0,
           countAccesories: productsAccesories || 0,
           lastVehicles: lastFiveVehicles.data,
-          lastProduct: lastFiveAccesories.data
+          lastProduct: lastFiveAccesories.data,
         },
         "Datos del dashboard."
       );
@@ -526,11 +528,10 @@ export class ProductsService extends ProductsRepository {
         product.reviews.push({
           amount: body.quantity as number,
           name: body.name,
-          description: body.description || ''
+          description: body.description || "",
         });
         await this.update(body.id, product);
       }
-      
 
       // return response
       return ResponseHandler.successResponse(
@@ -545,9 +546,9 @@ export class ProductsService extends ProductsRepository {
 
   /**
    * Get most sell products data
-   * @param res 
-   * @param products 
-   * @returns 
+   * @param res
+   * @param products
+   * @returns
    */
   public async getMotstProductsSells(res: Response, products: string) {
     try {
@@ -574,7 +575,10 @@ export class ProductsService extends ProductsRepository {
     try {
       // most sell
       const dates = this.utils.getDateRange(period);
-      const publishProduct = await this.loadPorductPublishInPeriod(dates.startDate, dates.endDate) 
+      const publishProduct = await this.loadPorductPublishInPeriod(
+        dates.startDate,
+        dates.endDate
+      );
 
       // return response
       return ResponseHandler.successResponse(
@@ -583,6 +587,31 @@ export class ProductsService extends ProductsRepository {
           products: publishProduct,
         },
         "Productos publicados."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  /**
+   * create from contapyme
+   * @param { Response } res
+   * @param { Request } req
+   */
+  public async createFromContapyme(res: Response, products: any) {
+    try {
+      for (const element of products) {
+        await this.create(element);
+      }
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        {
+          success: true,
+          message: 'Productos vinculados correctamente',
+        },
+        "Productos vinculados correctamente."
       );
     } catch (error: any) {
       throw new Error(error.message);

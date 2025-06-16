@@ -156,5 +156,13 @@ router.get(
   controller.countPublishProduct,
 );
 
+/**
+ * add product from cronjob
+ */
+router.post(
+  "/add/from/contapyme",
+  controller.createFromContapyme
+);
+
 // export router
 export { router };

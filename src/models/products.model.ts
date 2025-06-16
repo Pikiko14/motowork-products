@@ -47,7 +47,7 @@ const ProductSchema = new Schema<ProductsInterface>(
     },
     category: {
       type: String,
-      required: true,
+      required: false,
     },
     description: {
       type: String,
