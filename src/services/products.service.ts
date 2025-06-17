@@ -7,6 +7,7 @@ import {
 import { Response } from "express";
 import { Utils } from "../utils/utils";
 import { TaskQueue } from "../queues/cloudinary.queue";
+import { ProductsQueue } from "../queues/products.queue";
 import { CloudinaryService } from "./cloudinary.service";
 import { ResponseHandler } from "../utils/responseHandler";
 import { PaginationInterface } from "../types/req-ext.interface";
@@ -16,6 +17,7 @@ export class ProductsService extends ProductsRepository {
   public path: String;
   public queue: any;
   public utils: Utils;
+  public productsQueue: any;
   public folder: string = "products";
   public cloudinaryService: CloudinaryService;
 
@@ -25,6 +27,8 @@ export class ProductsService extends ProductsRepository {
     this.utils = new Utils();
     this.queue = new TaskQueue("cloudinary_products");
     this.queue.setupListeners();
+    this.productsQueue = new ProductsQueue('products_contapyme');
+    this.productsQueue.setupListeners();
     this.cloudinaryService = new CloudinaryService();
   }
 
@@ -600,8 +604,14 @@ export class ProductsService extends ProductsRepository {
    */
   public async createFromContapyme(res: Response, products: any) {
     try {
-      for (const element of products) {
-        await this.create(element);
+      for (const product of products) {
+        await this.productsQueue.addJob(
+          { taskType: "loadProductsData", payload: { product } },
+          {
+            attempts: 3,
+            backoff: 5000,
+          }
+        );
       }
 
       // return response
