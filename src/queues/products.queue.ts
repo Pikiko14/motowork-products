@@ -1,6 +1,7 @@
 import Bull, { Job, Queue, QueueOptions } from "bull";
 import configuration from "../../configuration/configuration";
 import productsRepository from "../repositories/products.repository";
+import { BannerType } from "../types/products.interface";
 
 export class ProductsQueue<T> extends productsRepository {
   private queue: Queue<T>;
@@ -40,6 +41,7 @@ export class ProductsQueue<T> extends productsRepository {
     const { product } = job.data.payload;
 
     // load product data
+    let productsImages: any[] = [];
     if (product.sku) {
       const url = `${configuration.get(
         "CONTAPYME_MS_API_URL"
@@ -55,8 +57,30 @@ export class ProductsQueue<T> extends productsRepository {
           const priceList = listaprecios.find((el: any) => el.ilista === "1");
           product.price = Number(priceList.mprecio);
         }
+
+        // validate image
+        if (infobasica?.qimagenes && parseInt(infobasica?.qimagenes) > 0) {
+          console.log(`Debo sacar las imagenes del producto: ${product.sku}`);
+          const urlImg = `${configuration.get(
+            "CONTAPYME_MS_API_URL"
+          )}/contacpime/product/${product.sku}/images`;
+          const imageRequest = await fetch(urlImg);
+          const imageProduct = await imageRequest.json();
+          const images = [
+            {
+              path: `${configuration.get("CONTAPYME_MS_API_URL")}${imageProduct.path}`,
+              type: BannerType.desktop,
+            },
+            {
+              path: `${configuration.get("CONTAPYME_MS_API_URL")}${imageProduct.path}`,
+              type: BannerType.mobile,
+            },
+          ];
+          productsImages = images;
+        }
       }
-      const productbd = await this.findOneByQuery({ sku: product.sku });
+      const productbd: any = await this.findOneByQuery({ sku: product.sku });
+      productbd.images = productsImages;
       if (!productbd) {
         await this.create(product);
       } else {
