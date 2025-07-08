@@ -54,6 +54,8 @@ export class Server {
         "http://motowork.xyz",
         "http://motowork.co",
         "https://motowork.co",
+        "http://admin.motowork.co",
+        "https://admin.motowork.co",
       ],
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       credentials: true,
