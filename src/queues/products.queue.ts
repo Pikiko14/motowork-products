@@ -68,11 +68,11 @@ export class ProductsQueue<T> extends productsRepository {
           const imageProduct = await imageRequest.json();
           const images = [
             {
-              path: `${configuration.get("CONTAPYME_MS_API_URL")}${imageProduct.path}`,
+              path: `https://pymes.motowork.co${imageProduct.path}`,
               type: BannerType.desktop,
             },
             {
-              path: `${configuration.get("CONTAPYME_MS_API_URL")}${imageProduct.path}`,
+              path: `https://pymes.motowork.co${imageProduct.path}`,
               type: BannerType.mobile,
             },
           ];
