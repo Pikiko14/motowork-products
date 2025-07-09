@@ -79,7 +79,7 @@ export class ProductsQueue<T> extends productsRepository {
           productsImages = images;
         }
       }
-      console.log(productsImages);
+      console.log(product);
       const productbd: any = await this.findOneByQuery({ sku: product.sku });
       if (!productbd) {
         product.images = productsImages;
