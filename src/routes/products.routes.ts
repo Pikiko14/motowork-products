@@ -101,6 +101,17 @@ router.delete(
 );
 
 /**
+ * Update default image
+ */
+router.put(
+  "/:id/update-default-image",
+  sessionCheck,
+  perMissionMiddleware("update-products"),
+  ProductIdValidator,
+  controller.updateDefaultImage
+);
+
+/**
  * Count product
  */
 router.get(

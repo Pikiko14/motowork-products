@@ -192,6 +192,27 @@ export class ProductsController {
   };
 
   /**
+   * update default image
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  updateDefaultImage = async (req: RequestExt, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { imageId, default_image } = req.body;
+      return await this.service.updateDefaultImage(
+        res,
+        id,
+        imageId,
+        default_image
+      );
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
+
+  /**
    * get count products
    * @param req Express request
    * @param res Express response

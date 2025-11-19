@@ -442,6 +442,113 @@ export class ProductsService extends ProductsRepository {
   }
 
   /**
+   * Update default image
+   * @param { Response } res Express response
+   * @param { string } id Product id
+   * @param { string } imageId Image id
+   * @param { boolean } default_image Default image flag
+   */
+  public async updateDefaultImage(
+    res: Response,
+    id: string,
+    imageId: string,
+    default_image: boolean
+  ) {
+    try {
+      // get product
+      const product = (await this.findById(id)) as ProductsInterface;
+      
+      if (!product) {
+        throw new Error("Producto no encontrado.");
+      }
+
+      if (!product.images || product.images.length === 0) {
+        throw new Error("El producto no tiene imágenes.");
+      }
+      console.log(product.images);
+      
+      // Convert images to plain objects to handle ObjectId comparison
+      const images = JSON.parse(JSON.stringify(product?.images || []));
+      
+      // find image and update - try multiple comparison methods
+      let imageIndex = images.findIndex(
+        (item: ProductImagesInterface) => {
+          if (item._id) {
+            const itemId = String(item._id);
+            const searchId = String(imageId);
+            return itemId === searchId;
+          }
+          return false;
+        }
+      );
+
+      // If not found by _id, try to find by index (if imageId is a number)
+      if (imageIndex === -1 && !isNaN(Number(imageId))) {
+        imageIndex = Number(imageId);
+        if (imageIndex < 0 || imageIndex >= images.length) {
+          imageIndex = -1;
+        }
+      }
+
+      // If still not found, try without conversion on original array
+      if (imageIndex === -1) {
+        imageIndex = product.images.findIndex(
+          (item: ProductImagesInterface, idx: number) => {
+            if (item._id) {
+              const itemIdStr = String(item._id);
+              const searchIdStr = String(imageId);
+              return itemIdStr === searchIdStr || item._id.toString() === imageId;
+            }
+            // Fallback: if no _id, try by index
+            return String(idx) === String(imageId);
+          }
+        );
+      }
+
+      if (imageIndex === -1) {
+        // Log for debugging
+        console.log('Image search failed:', {
+          imageId,
+          imageIdType: typeof imageId,
+          imagesCount: images.length,
+          imagesWithId: images.filter((img: any) => img._id).length,
+          firstImageId: images[0]?._id,
+          firstImageIdType: typeof images[0]?._id
+        });
+        throw new Error(`Imagen no encontrada. ImageId recibido: ${imageId}, Total imágenes: ${images.length}`);
+      }
+
+      // If setting as default, unset other images of the same type
+      if (default_image) {
+        images.forEach((item: ProductImagesInterface, index: number) => {
+          if (item.type === images[imageIndex].type) {
+            item.default_image = index === imageIndex;
+          }
+        });
+      } else {
+        images[imageIndex].default_image = false;
+      }
+
+      // Update product with modified images
+      product.images = images;
+
+      // save updated product
+      await this.update(id, product);
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        images,
+        default_image 
+          ? "Imagen marcada como por defecto correctamente." 
+          : "Imagen desmarcada como por defecto correctamente."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  /**
    * Count products
    * @param { Response } res Express response
    * @param { string } type

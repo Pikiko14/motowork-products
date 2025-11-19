@@ -71,6 +71,10 @@ const ProductSchema = new Schema<ProductsInterface>(
     ],
     images: [
       {
+        _id: {
+          type: Schema.Types.ObjectId,
+          auto: true,
+        },
         path: {
           type: String,
           required: false,
@@ -79,6 +83,11 @@ const ProductSchema = new Schema<ProductsInterface>(
           type: String,
           enum: Object.values(BannerType),
           required: false,
+        },
+        default_image: {
+          type: Boolean,
+          required: false,
+          default: false,
         },
       },
     ],
