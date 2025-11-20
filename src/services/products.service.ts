@@ -734,4 +734,12 @@ export class ProductsService extends ProductsRepository {
       throw new Error(error.message);
     }
   }
+
+  public async deleteProductInBulk(res: Response) {
+    try {
+      await this.deleteMany({ type: TypeProducts.product });
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

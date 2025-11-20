@@ -175,5 +175,10 @@ router.post(
   controller.createFromContapyme
 );
 
+router.delete(
+  "/delete/product/type/product",
+  controller.deleteProductTypeProduct
+);
+
 // export router
 export { router };

@@ -179,6 +179,10 @@ class ProductsRepository {
   
     return results;
   }
+
+  public async deleteMany(query: any): Promise<any> {
+    return await this.model.deleteMany(query);
+  }
 }
 
 export default ProductsRepository;

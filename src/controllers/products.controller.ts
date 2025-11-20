@@ -284,4 +284,15 @@ export class ProductsController {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
+
+  /**
+   * delete product type product
+   */
+  deleteProductTypeProduct = async (res: Response) => {
+    try {
+      return await this.service.deleteProductInBulk(res);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
 }
